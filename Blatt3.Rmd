@@ -1,5 +1,5 @@
 ---
-title: 'Exercise #2'
+title: 'Exercise #3'
 author: "Oleg Tolochko (12552516), Tobias Anzinger (12615518)"
 date: "`r Sys.Date()`"
 subtitle: "Fortgeschrittene Statistische Software für NF - SS 2022/23"
@@ -24,5 +24,90 @@ Weaknesses:
 
 ### a)
  https://github.com/Ballmaid/exeRcise-sheet-3
- 
- 
+
+
+## Exercise 3
+
+### b)
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+vornamen_2021 <- read.csv("data/vornamen_2021.csv")
+vornamen_2022 <- read.csv("data/open_data_portal_2022.csv")
+
+#names, that exist less than 4 times are named "4 oder weniger", which is not numeric
+
+vornamen_2021$Anzahl <- ifelse(vornamen_2021$Anzahl == "4 oder weniger", 1, vornamen_2021$Anzahl)
+vornamen_2021$Anzahl <- as.numeric(vornamen_2021$Anzahl)
+
+vornamen_2022$Anzahl <- ifelse(vornamen_2022$Anzahl == "4 oder weniger", 1, vornamen_2022$Anzahl)
+vornamen_2022$Anzahl <- as.numeric(vornamen_2022$Anzahl)
+```
+All names that are marked as "4 oder weniger" were converted to exactly 1. Most of the names listed probably will only exist exactly once, judging by the extreme decline in numbers. Else the majority of names listed in the data set would be falsly marked as more than one.
+
+### c)
+```{r message=FALSE, warning=FALSE}
+sum(vornamen_2021$Anzahl)
+sum(vornamen_2022$Anzahl)
+```
+2021 had more babies than 2022
+
+### c)
+```{r message=FALSE, warning=FALSE}
+vornamen_2021$year <- 2021
+vornamen_2022$year <- 2022
+```
+
+### d)
+```{r message=FALSE, warning=FALSE}
+vornamen <- bind_rows(vornamen_2021, vornamen_2022)
+```
+
+### e)
+```{r message=FALSE, warning=FALSE}
+library(knitr)
+vornamen_combined <- vornamen %>%
+  group_by(Vorname) %>%
+  summarize(total_count = sum(Anzahl)) %>%
+  arrange(desc(total_count))
+
+kable(head(vornamen_combined, 10), caption = "Top 10 Most Popular Baby Names in Munich (2021-2022)")
+```
+## Exercise 4
+
+### a)
+```{r message=FALSE, warning=FALSE}
+###Create a sample data frame
+tax_data <- data.frame( Name = c("Munich GmbH", "ABC Inc.", "Backpacks 1980", "Bavarian Circus"),
+Tax_2019 = c(5000, 4000, 6000, 3500), Tax_2020 = c(4800, 4200, 5800, 3700), Tax_2021 = c(5200, 3800,
+5900, 3400) )
+
+# Calculate column-wise means
+column_means <- lapply(tax_data[, -1], mean)
+column_means
+
+# Calculate row-wise means
+tax_data$mean_tax <- rowMeans(tax_data[, -1])
+tax_data
+
+
+```
+
+
+### b) 
+rapply() is a recursive version of the lapply function. With it you can apply a function to each element in the list. The how parameter allows you to choose what will happen with the list
+
+Example:
+```{r message=FALSE, warning=FALSE}
+nested_list <- list(a = 1:5, 
+                    b = list(b1 = 6:10, b2 = 11:15), 
+                    c = 16:20)
+print(nested_list)
+
+new_list <- rapply(nested_list, function(x) x * 2, how = "replace")
+
+
+print(new_list)
+
+```
+In this case all the Elements in the list are doubled and replaced.

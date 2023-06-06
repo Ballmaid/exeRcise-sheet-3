@@ -13,7 +13,7 @@
 
 <meta name="date" content="2023-06-06" />
 
-<title>Exercise #2</title>
+<title>Exercise #3</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,7 +350,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Exercise #2</h1>
+<h1 class="title toc-ignore">Exercise #3</h1>
 <h3 class="subtitle">Fortgeschrittene Statistische Software für NF - SS
 2022/23</h3>
 <h4 class="author">Oleg Tolochko (12552516), Tobias Anzinger
@@ -374,6 +374,179 @@ beginners?</p>
 <div id="a" class="section level3">
 <h3>a)</h3>
 <p><a href="https://github.com/Ballmaid/exeRcise-sheet-3" class="uri">https://github.com/Ballmaid/exeRcise-sheet-3</a></p>
+</div>
+</div>
+<div id="exercise-3" class="section level2">
+<h2>Exercise 3</h2>
+<div id="b" class="section level3">
+<h3>b)</h3>
+<pre class="r"><code>library(tidyverse)
+vornamen_2021 &lt;- read.csv(&quot;data/vornamen_2021.csv&quot;)
+vornamen_2022 &lt;- read.csv(&quot;data/open_data_portal_2022.csv&quot;)
+
+#names, that exist less than 4 times are named &quot;4 oder weniger&quot;, which is not numeric
+
+vornamen_2021$Anzahl &lt;- ifelse(vornamen_2021$Anzahl == &quot;4 oder weniger&quot;, 1, vornamen_2021$Anzahl)
+vornamen_2021$Anzahl &lt;- as.numeric(vornamen_2021$Anzahl)
+
+vornamen_2022$Anzahl &lt;- ifelse(vornamen_2022$Anzahl == &quot;4 oder weniger&quot;, 1, vornamen_2022$Anzahl)
+vornamen_2022$Anzahl &lt;- as.numeric(vornamen_2022$Anzahl)</code></pre>
+<p>All names that are marked as “4 oder weniger” were converted to
+exactly 1. Most of the names listed probably will only exist exactly
+once, judging by the extreme decline in numbers. Else the majority of
+names listed in the data set would be falsly marked as more than
+one.</p>
+</div>
+<div id="c" class="section level3">
+<h3>c)</h3>
+<pre class="r"><code>sum(vornamen_2021$Anzahl)</code></pre>
+<pre><code>## [1] 15298</code></pre>
+<pre class="r"><code>sum(vornamen_2022$Anzahl)</code></pre>
+<pre><code>## [1] 13724</code></pre>
+<p>2021 had more babies than 2022</p>
+</div>
+<div id="c-1" class="section level3">
+<h3>c)</h3>
+<pre class="r"><code>vornamen_2021$year &lt;- 2021
+vornamen_2022$year &lt;- 2022</code></pre>
+</div>
+<div id="d-1" class="section level3">
+<h3>d)</h3>
+<pre class="r"><code>vornamen &lt;- bind_rows(vornamen_2021, vornamen_2022)</code></pre>
+</div>
+<div id="e" class="section level3">
+<h3>e)</h3>
+<pre class="r"><code>library(knitr)
+vornamen_combined &lt;- vornamen %&gt;%
+  group_by(Vorname) %&gt;%
+  summarize(total_count = sum(Anzahl)) %&gt;%
+  arrange(desc(total_count))
+
+kable(head(vornamen_combined, 10), caption = &quot;Top 10 Most Popular Baby Names in Munich (2021-2022)&quot;)</code></pre>
+<table>
+<caption>Top 10 Most Popular Baby Names in Munich (2021-2022)</caption>
+<thead>
+<tr class="header">
+<th align="left">Vorname</th>
+<th align="right">total_count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Maximilian</td>
+<td align="right">240</td>
+</tr>
+<tr class="even">
+<td align="left">Emilia</td>
+<td align="right">234</td>
+</tr>
+<tr class="odd">
+<td align="left">Felix</td>
+<td align="right">220</td>
+</tr>
+<tr class="even">
+<td align="left">Anton</td>
+<td align="right">206</td>
+</tr>
+<tr class="odd">
+<td align="left">Emma</td>
+<td align="right">199</td>
+</tr>
+<tr class="even">
+<td align="left">Leon</td>
+<td align="right">195</td>
+</tr>
+<tr class="odd">
+<td align="left">Noah</td>
+<td align="right">185</td>
+</tr>
+<tr class="even">
+<td align="left">Jakob</td>
+<td align="right">180</td>
+</tr>
+<tr class="odd">
+<td align="left">Anna</td>
+<td align="right">178</td>
+</tr>
+<tr class="even">
+<td align="left">Lukas</td>
+<td align="right">173</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="exercise-4" class="section level2">
+<h2>Exercise 4</h2>
+<div id="a-1" class="section level3">
+<h3>a)</h3>
+<pre class="r"><code>###Create a sample data frame
+tax_data &lt;- data.frame( Name = c(&quot;Munich GmbH&quot;, &quot;ABC Inc.&quot;, &quot;Backpacks 1980&quot;, &quot;Bavarian Circus&quot;),
+Tax_2019 = c(5000, 4000, 6000, 3500), Tax_2020 = c(4800, 4200, 5800, 3700), Tax_2021 = c(5200, 3800,
+5900, 3400) )
+
+# Calculate column-wise means
+column_means &lt;- lapply(tax_data[, -1], mean)
+column_means</code></pre>
+<pre><code>## $Tax_2019
+## [1] 4625
+## 
+## $Tax_2020
+## [1] 4625
+## 
+## $Tax_2021
+## [1] 4575</code></pre>
+<pre class="r"><code># Calculate row-wise means
+tax_data$mean_tax &lt;- rowMeans(tax_data[, -1])
+tax_data</code></pre>
+<pre><code>##              Name Tax_2019 Tax_2020 Tax_2021 mean_tax
+## 1     Munich GmbH     5000     4800     5200 5000.000
+## 2        ABC Inc.     4000     4200     3800 4000.000
+## 3  Backpacks 1980     6000     5800     5900 5900.000
+## 4 Bavarian Circus     3500     3700     3400 3533.333</code></pre>
+</div>
+<div id="b-1" class="section level3">
+<h3>b)</h3>
+<p>rapply() is a recursive version of the lapply function. With it you
+can apply a function to each element in the list. The how parameter
+allows you to choose what will happen with the list</p>
+<p>Example:</p>
+<pre class="r"><code>nested_list &lt;- list(a = 1:5, 
+                    b = list(b1 = 6:10, b2 = 11:15), 
+                    c = 16:20)
+print(nested_list)</code></pre>
+<pre><code>## $a
+## [1] 1 2 3 4 5
+## 
+## $b
+## $b$b1
+## [1]  6  7  8  9 10
+## 
+## $b$b2
+## [1] 11 12 13 14 15
+## 
+## 
+## $c
+## [1] 16 17 18 19 20</code></pre>
+<pre class="r"><code>new_list &lt;- rapply(nested_list, function(x) x * 2, how = &quot;replace&quot;)
+
+
+print(new_list)</code></pre>
+<pre><code>## $a
+## [1]  2  4  6  8 10
+## 
+## $b
+## $b$b1
+## [1] 12 14 16 18 20
+## 
+## $b$b2
+## [1] 22 24 26 28 30
+## 
+## 
+## $c
+## [1] 32 34 36 38 40</code></pre>
+<p>In this case all the Elements in the list are doubled and
+replaced.</p>
 </div>
 </div>
 
