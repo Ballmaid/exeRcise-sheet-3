@@ -1,0 +1,28 @@
+---
+title: 'Exercise #2'
+author: "Oleg Tolochko (12552516), Tobias Anzinger (12615518)"
+date: "`r Sys.Date()`"
+subtitle: "Fortgeschrittene Statistische Software für NF - SS 2022/23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1
+
+### d)
+Strengths:
+ - very fast/efficient
+ - popular, standard in industry
+ 
+Weaknesses:
+ - Merging can cause issues 
+ - difficult to use for beginners?
+ 
+## Exercise 2
+
+### a)
+ https://github.com/Ballmaid/exeRcise-sheet-3
+ 
+ 
